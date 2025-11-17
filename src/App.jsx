@@ -6,6 +6,7 @@ function App() {
   const [packageCount, setPackageCount] = useState("");
   const [packages, setPackages] = useState([]);
   const [data,setData] = useState([]);
+  
 
   const handlePackageCount = (e) => {
     const count = Number(e.target.value);
@@ -29,6 +30,17 @@ function App() {
     setPackages(updated);
   };
 
+  const calculateOffer = (wt,dist) =>{
+            let discount="No Offer Code Applicable";
+            if(dist<200 && (wt>=70 && wt<=200)){
+                discount = "OFR10";
+            }else if((dist>50 && dist<150) && (wt>=100 && wt<=250)){
+                discount = "OFR07";
+            }else if((dist>50 && dist<250) && (wt>=10 && wt<=150)){
+                discount = "OFR05";
+            }
+            return discount
+  }
   const sendData = async(e) =>{
     e.preventDefault()
   const res = await fetch("https://backend-courierservice.onrender.com/calculate",{
@@ -68,11 +80,9 @@ setData(data.results);
                   <label>Package ID</label>
                   <input
                   type="number"
-                  value={pkg.id}
-                  onChange={(e) =>
-                    updatePackage(index, "id", e.target.value)
-              }
-            />
+                  value={index+1}
+                  readOnly
+                  />
               </div>
               <div className='field'>
                 <label>Weight (kg)</label>
@@ -100,10 +110,8 @@ setData(data.results);
                   <label>Offer Code</label>
                   <input
                     type="text"
-                    value={pkg.offerCode}
-                    onChange={(e) =>
-                      updatePackage(index, "offerCode", e.target.value)
-                    }
+                    value={calculateOffer(Number(pkg.weight),Number(pkg.distance))}  
+                    readOnly                  
                   />
               </div>
             </div>
