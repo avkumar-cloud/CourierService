@@ -33,7 +33,7 @@ function App() {
 
   const sendData = async(e) =>{
     e.preventDefault()
-  const res = await fetch("http://localhost:3000/calculate",{
+  const res = await fetch("https://backend-courierservice.onrender.com/calculate",{
   method: "POST",
   headers: {
     "Content-Type": "application/json",
