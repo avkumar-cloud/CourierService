@@ -10,9 +10,7 @@ function App() {
   const handlePackageCount = (e) => {
     const count = Number(e.target.value);
     setPackageCount(count);
-
     const arr = [];
-
     for (let i = 0; i < count; i++) {
       arr.push({
         id: "",
