@@ -6,7 +6,7 @@ function App() {
   const [packageCount, setPackageCount] = useState("");
   const [packages, setPackages] = useState([]);
   const [data,setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   
 
   const handlePackageCount = (e) => {
@@ -49,6 +49,7 @@ function App() {
 
   const sendData = async(e) =>{
   e.preventDefault()
+  setLoading(true)
   const res = await fetch("https://backend-courierservice.onrender.com/calculate",{
   method: "POST",
   headers: {
@@ -128,7 +129,7 @@ setLoading(false);
         
           <button type="submit" className='submit-btn'>Submit</button>
         {
-          data && (
+          loading ? (<div className='loading'>Loading...</div>) : data.length>0 ? (
             data.map((item,index)=>(
               <ul className='result' key={index}>
                  <li>PackageID: {item.packageId}</li>
@@ -136,7 +137,7 @@ setLoading(false);
                 <li>FinalCost: {item.costAfterDiscount}</li>
               </ul> 
             ))
-          )
+          ) : null
         }
       </form>
     </div>
