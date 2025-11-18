@@ -6,6 +6,7 @@ function App() {
   const [packageCount, setPackageCount] = useState("");
   const [packages, setPackages] = useState([]);
   const [data,setData] = useState([]);
+  const [loading, setLoading] = useState(true);
   
 
   const handlePackageCount = (e) => {
@@ -14,35 +15,40 @@ function App() {
     const arr = [];
     for (let i = 0; i < count; i++) {
       arr.push({
-        id: "",
+        id: i+1,
         weight: "",
         distance: "",
         offerCode: "",
       });
     }
-
     setPackages(arr);
   };
 
   const updatePackage = (index, field, value) => {
     const updated = [...packages];
     updated[index][field] = value;
+    const wt = updated[index]["weight"];
+    const dist = updated[index]["distance"];
+    updated[index]["offerCode"] = calculateOffer(wt,dist);
     setPackages(updated);
   };
 
   const calculateOffer = (wt,dist) =>{
-            let discount="No Offer Code Applicable";
+            let offerCode = "";
             if(dist<200 && (wt>=70 && wt<=200)){
-                discount = "OFR10";
-            }else if((dist>50 && dist<150) && (wt>=100 && wt<=250)){
-                discount = "OFR07";
-            }else if((dist>50 && dist<250) && (wt>=10 && wt<=150)){
-                discount = "OFR05";
+                offerCode = "OFR10";
+            }else if((dist>=50 && dist<=150) && (wt>=100 && wt<=250)){
+                offerCode = "OFR07";
+            }else if((dist>=50 && dist<=250) && (wt>=10 && wt<=150)){
+                offerCode = "OFR05";
+            }else{
+              offerCode = "No Offer Code Applicable";
             }
-            return discount
+            return offerCode
   }
+
   const sendData = async(e) =>{
-    e.preventDefault()
+  e.preventDefault()
   const res = await fetch("https://backend-courierservice.onrender.com/calculate",{
   method: "POST",
   headers: {
@@ -55,9 +61,10 @@ function App() {
 
 const data = await res.json();
 setData(data.results);
-
-
+setLoading(false);
   }
+
+
   return (
     <div className='container'>
       <h1 className='title'>Courier Service</h1>
@@ -110,7 +117,7 @@ setData(data.results);
                   <label>Offer Code</label>
                   <input
                     type="text"
-                    value={calculateOffer(Number(pkg.weight),Number(pkg.distance))}  
+                    value={pkg.offerCode}  
                     readOnly                  
                   />
               </div>
